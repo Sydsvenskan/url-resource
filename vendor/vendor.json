@@ -1,0 +1,19 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "3+lnqw91GGgXsJZt1R1ZraGMUIU=",
+			"path": "github.com/Sydsvenskan/concourse",
+			"revision": "41b6dc83cb1e753f55f1b8c9453634475b1666a2",
+			"revisionTime": "2016-09-08T07:37:34Z"
+		},
+		{
+			"checksumSHA1": "ynJSWoF6v+3zMnh9R0QmmG6iGV8=",
+			"path": "github.com/pkg/errors",
+			"revision": "248dadf4e9068a0b3e79f02ed0a610d935de5302",
+			"revisionTime": "2016-10-29T09:36:37Z"
+		}
+	],
+	"rootPath": "github.com/Sydsvenskan/url-resource"
+}
