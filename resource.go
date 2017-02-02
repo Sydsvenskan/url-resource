@@ -41,9 +41,7 @@ func (cmd *CheckCommand) HandleCommand(ctx *concourse.CommandContext) (
 	*concourse.CommandResponse, error,
 ) {
 	var err error
-	resp := concourse.CommandResponse{
-		Versions: make([]concourse.ResourceVersion, 0, 0),
-	}
+	var resp concourse.CommandResponse
 
 	if cmd.Version != nil {
 		resp.Versions = append(resp.Versions, cmd.Version)
@@ -120,9 +118,9 @@ func (cmd *CheckCommand) HandleCommand(ctx *concourse.CommandContext) (
 	}
 
 	// Prepend the new version to the versions array
-	resp.Versions = append([]concourse.ResourceVersion{
+	resp.Versions = []concourse.ResourceVersion{
 		version,
-	}, resp.Versions...)
+	}
 
 	return &resp, nil
 }
@@ -132,7 +130,6 @@ type Source struct {
 	Timeout   string      `json:"timeout"`
 	Headers   http.Header `json:"headers,omitempty"`
 	BasicAuth *BasicAuth  `json:"basic_auth,omitempty"`
-	Strict    bool        `json:"strict"`
 }
 
 type BasicAuth struct {
@@ -195,7 +192,7 @@ func (cmd *InCommand) HandleCommand(ctx *concourse.CommandContext) (
 
 	version := concourse.ResourceVersion{}
 	responseETag := res.Header.Get("ETag")
-	if etag != "" && etag != responseETag && cmd.Source.Strict {
+	if etag != "" && etag != responseETag {
 		return nil, errors.Errorf(
 			"unexpected ETag %q, expected %q", responseETag, etag,
 		)
@@ -216,7 +213,7 @@ func (cmd *InCommand) HandleCommand(ctx *concourse.CommandContext) (
 	}
 	version["sha1"] = fmt.Sprintf("%x", h.Sum(nil))
 
-	if hash != "" && version["sha1"] != hash && cmd.Source.Strict {
+	if hash != "" && version["sha1"] != hash {
 		return nil, errors.Errorf("unexpected SHA1 content hash %q, expected %q",
 			version["sha1"], hash,
 		)
