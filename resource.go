@@ -132,6 +132,7 @@ type Source struct {
 	Timeout   string      `json:"timeout"`
 	Headers   http.Header `json:"headers,omitempty"`
 	BasicAuth *BasicAuth  `json:"basic_auth,omitempty"`
+	Strict    bool        `json:"strict"`
 }
 
 type BasicAuth struct {
@@ -194,7 +195,7 @@ func (cmd *InCommand) HandleCommand(ctx *concourse.CommandContext) (
 
 	version := concourse.ResourceVersion{}
 	responseETag := res.Header.Get("ETag")
-	if etag != "" && etag != responseETag {
+	if etag != "" && etag != responseETag && cmd.Source.Strict {
 		return nil, errors.Errorf(
 			"unexpected ETag %q, expected %q", responseETag, etag,
 		)
@@ -215,7 +216,7 @@ func (cmd *InCommand) HandleCommand(ctx *concourse.CommandContext) (
 	}
 	version["sha1"] = fmt.Sprintf("%x", h.Sum(nil))
 
-	if hash != "" && version["sha1"] != hash {
+	if hash != "" && version["sha1"] != hash && cmd.Source.Strict {
 		return nil, errors.Errorf("unexpected SHA1 content hash %q, expected %q",
 			version["sha1"], hash,
 		)
